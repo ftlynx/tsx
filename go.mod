@@ -16,4 +16,5 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.5.0
 	github.com/tebeka/strftime v0.1.3 // indirect
+	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
 )
