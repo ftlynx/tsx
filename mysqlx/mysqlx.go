@@ -1,4 +1,4 @@
-package mysqlxfunc
+package mysqlx
 
 import (
 	"database/sql"
