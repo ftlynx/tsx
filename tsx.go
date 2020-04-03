@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 //创建文件父目录
@@ -17,4 +18,8 @@ func CreateParentDir(dstfile string) error {
 
 func Errx(s string, e error) error{
 	return fmt.Errorf("%s %w", s, e)
+}
+
+func Millisecond() int64 {
+	return time.Now().UnixNano() / (1000 * 1000)
 }

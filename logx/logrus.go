@@ -14,6 +14,7 @@ type LogConfig struct {
 	File          string
 	Json          bool
 	RotationCount uint
+	RotationHour  time.Duration //多少小时滚动文件
 }
 
 //转换用户输入的字符串， logrus自身有一个，重写一个如果传入异常，默认为info
@@ -55,9 +56,9 @@ func (l *LogConfig) New() *logrus.Logger {
 			l.RotationCount = 30
 		}
 		write, err := rotatelogs.New(
-			l.File+".%Y-%m-%d",
+			l.File+".%Y-%m-%d-%H",
 			rotatelogs.WithLinkName(l.File),
-			rotatelogs.WithRotationTime(time.Hour*24),
+			rotatelogs.WithRotationTime(l.RotationHour*time.Hour),
 			rotatelogs.WithRotationCount(l.RotationCount),
 		)
 		if err != nil {
