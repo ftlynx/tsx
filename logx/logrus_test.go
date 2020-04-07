@@ -3,7 +3,7 @@ package logx
 import (
 	"testing"
 	"time"
-	"tsx"
+	"github.com/ftlynx/tsx"
 )
 
 func TestNew(t *testing.T) {

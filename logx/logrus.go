@@ -1,12 +1,12 @@
 package logx
 
 import (
+	"github.com/ftlynx/tsx"
 	"github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"
 	"os"
 	"strings"
 	"time"
-	"tsx"
 )
 
 type LogConfig struct {
