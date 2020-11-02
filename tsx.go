@@ -116,3 +116,9 @@ func BigOne(i int, j int) int {
 	}
 	return j
 }
+
+//判断一个路径(可能是文件，也可能是文件夹)是否存在
+func FileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil || os.IsExist(err)
+}
