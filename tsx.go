@@ -1,6 +1,7 @@
 package tsx
 
 import (
+	"crypto/md5"
 	"fmt"
 	"math/rand"
 	"net"
@@ -91,7 +92,6 @@ func CheckIpList(ipList []string) error {
 	return nil
 }
 
-
 //分割xxx@xxx的字符串
 func SplitString(str string) (string, string) {
 	strList := strings.Split(str, "@")
@@ -111,7 +111,7 @@ func Int2Bool(i uint) bool {
 
 // 返回两个数中大的那一个
 func BigOne(i int, j int) int {
-	if i>j {
+	if i > j {
 		return i
 	}
 	return j
@@ -121,4 +121,8 @@ func BigOne(i int, j int) int {
 func FileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil || os.IsExist(err)
+}
+
+func Md5(data []byte) string {
+	return fmt.Sprintf("%x", md5.Sum(data))
 }
