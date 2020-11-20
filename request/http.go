@@ -22,7 +22,7 @@ type HttpResponse struct {
 	Header  http.Header //请求返回的header
 }
 
-func JenkinsHttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
+func HttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
 	rc := HttpResponse{}
 	req, err := http.NewRequest(reqParam.Method, reqParam.Url, strings.NewReader(reqParam.Body))
 	if err != nil {
@@ -32,7 +32,7 @@ func JenkinsHttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
 	if reqParam.Passwd != ""{
 		req.SetBasicAuth(reqParam.User, reqParam.Passwd)
 	}
-	// jenkins token is another passwd
+	//token
 	if reqParam.Token != "" {
 		req.SetBasicAuth(reqParam.User, reqParam.Token)
 	}
