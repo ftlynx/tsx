@@ -8,12 +8,12 @@ import (
 )
 
 type HttpRequestParam struct {
-	Url    string
-	Body   string
-	Method string
-	Token  string
-	User   string
-	Passwd string
+	Url           string
+	Body          string
+	Method        string
+	User          string
+	Password      string
+	Authorization string
 }
 
 type HttpResponse struct {
@@ -29,12 +29,12 @@ func HttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
 		return rc, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	if reqParam.Passwd != ""{
-		req.SetBasicAuth(reqParam.User, reqParam.Passwd)
+	if reqParam.Password != "" {
+		req.SetBasicAuth(reqParam.User, reqParam.Password)
 	}
-	//token
-	if reqParam.Token != "" {
-		req.SetBasicAuth(reqParam.User, reqParam.Token)
+
+	if reqParam.Authorization != "" {
+		req.Header.Set("Authorization", reqParam.Authorization)
 	}
 
 	//fmt.Println(req.URL, req.Header.Get("Authorization"))
