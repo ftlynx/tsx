@@ -20,6 +20,9 @@ func Errx(s string, e error) error {
 
 //打印日志
 func ErrxError(e error) error {
+	if e == nil {
+		return e
+	}
 	_, file, line, ok := runtime.Caller(1)
 	if !ok {
 		return Errx("caller fail", e)
