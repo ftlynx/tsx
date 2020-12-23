@@ -24,6 +24,11 @@ func Millisecond() int64 {
 	return time.Now().UnixNano() / (1000 * 1000)
 }
 
+func MillisecondString() string {
+	t := strings.Split(time.Now().Format("20060201150405.000"), ".")
+	return fmt.Sprintf("%s%s",t[0],t[1])
+}
+
 //判断一个字符串是否在列表内
 func IsArray(strList []string, str string) bool {
 	for _, s := range strList {
