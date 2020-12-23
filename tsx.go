@@ -25,7 +25,7 @@ func Millisecond() int64 {
 }
 
 func MillisecondString() string {
-	t := strings.Split(time.Now().Format("20060201150405.000"), ".")
+	t := strings.Split(time.Now().Format("20060102150405.000"), ".")
 	return fmt.Sprintf("%s%s",t[0],t[1])
 }
 
