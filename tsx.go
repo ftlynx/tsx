@@ -70,6 +70,21 @@ func GetRandomLowerString(getLen int64, prefix string) string {
 	}
 	return prefix + "-" + string(result)
 }
+//生成小写随机字符串,如果prefix为空，则不带前缀。
+func GetRandomLowerNumberString(getLen int64, prefix string) string {
+	str := "abcdefghijklmnopqrstuvwxyz0123456789"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	var i int64
+	for i = 0; i < getLen; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	if prefix == "" {
+		return string(result)
+	}
+	return prefix + "-" + string(result)
+}
 
 //判断一串字符是否为IP， 支持传入多个字符串IsIPv4("1.1.1.1", "2.2.2.2")，也支持传入的字符串以,分割的字符串IsIPv4("1.1.1.1,1.1.1.2", "2.2.2.2")
 func IsIPv4(ips ...string) error {
