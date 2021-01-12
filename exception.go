@@ -40,3 +40,4 @@ func Error(err error, errCode ...int) error {
 		ErrCode:  code,
 	}
 }
+
