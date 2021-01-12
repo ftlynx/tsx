@@ -2,6 +2,8 @@ package tsx
 
 import "net/http"
 
+const RequestIdKey = "request_id" //用来记录每次请求ID的key
+
 type CodeValue struct {
 	HttpCode int
 	Msg      string
