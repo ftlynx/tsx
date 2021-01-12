@@ -38,7 +38,7 @@ func NewOk(data ...interface{}) *Response {
 }
 
 func NewResponse(err error) *Response {
-	if exception, ok := err.(*exception); ok {
+	if exception, ok := err.(*Exception); ok {
 		message := "未定义的code"
 		httpCode := http.StatusInternalServerError
 		if exception.ErrCode == 0 {
