@@ -7,14 +7,7 @@ type CodeValue struct {
 	Msg      string
 }
 
-var CodeMap = map[int]CodeValue{
-	http.StatusBadRequest:          {http.StatusBadRequest, "参数错误"},
-	http.StatusUnauthorized:        {http.StatusUnauthorized, "认证失败"},
-	http.StatusForbidden:           {http.StatusForbidden, "权限拒绝"},
-	http.StatusNotFound:            {http.StatusNotFound, http.StatusText(http.StatusNotFound)},
-	http.StatusMethodNotAllowed:    {http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed)},
-	http.StatusInternalServerError: {http.StatusInternalServerError, "服务器内部错误"},
-}
+var CodeMap map[int]CodeValue
 
 type Response struct {
 	HttpCode  int         `json:"-"`
