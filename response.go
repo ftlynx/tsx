@@ -68,7 +68,6 @@ func NewResponse(err error) *Response {
 	}
 }
 
-
 // PageData 数据分页数据
 type PageData struct {
 	PageSize   int         `json:"page_size"`   // 一页多少条
