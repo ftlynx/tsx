@@ -3,8 +3,8 @@ package tsx
 import "net/http"
 
 type CodeValue struct {
-	httpCode int
-	msg      string
+	HttpCode int
+	Msg      string
 }
 
 var CodeMap = map[int]CodeValue{
@@ -52,8 +52,8 @@ func NewResponse(err error) *Response {
 			exception.ErrCode = http.StatusInternalServerError
 		}
 		if _, ok := CodeMap[exception.ErrCode]; ok {
-			message = CodeMap[exception.ErrCode].msg
-			httpCode = CodeMap[exception.ErrCode].httpCode
+			message = CodeMap[exception.ErrCode].Msg
+			httpCode = CodeMap[exception.ErrCode].HttpCode
 		}
 		return &Response{
 			HttpCode:  httpCode,
