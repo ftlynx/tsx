@@ -9,7 +9,7 @@ type CodeValue struct {
 	Msg      string
 }
 
-var CodeMap map[int]CodeValue
+var CodeMap map[int]CodeValue //定义code
 
 type Response struct {
 	HttpCode  int         `json:"-"`
