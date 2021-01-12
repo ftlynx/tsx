@@ -53,7 +53,7 @@ func NewResponse(err error) *Response {
 		return &Response{
 			HttpCode:  httpCode,
 			ErrCode:   exception.ErrCode,
-			ErrMsg:    exception.ErrMsg,
+			ErrMsg:    exception.Error(),
 			Message:   message,
 			Data:      nil,
 			RequestId: "",
