@@ -107,3 +107,4 @@ func (p *QueryPaging) defaultValue() {
 	if p.PageSize == 0 {
 		p.PageSize = 10
 	}
+}
