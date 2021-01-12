@@ -65,3 +65,45 @@ func NewResponse(err error) *Response {
 		ErrMsg:   err.Error(),
 	}
 }
+
+
+// PageData 数据分页数据
+type PageData struct {
+	PageSize   int         `json:"page_size"`   // 一页多少条
+	PageIndex  int         `json:"page_index"`  // 当前第几页
+	SizeCount  int64       `json:"size_count"`  // 总共多少条数据
+	IndexCount int         `json:"index_count"` // 总共多少页面
+	List       interface{} `json:"list"`        // 页面数据
+}
+
+func (p *PageData) Format(sizeCount int64, pageSize int, list interface{}) {
+	//除尽就不+1
+	complement := 1
+	if sizeCount%int64(pageSize) == 0 {
+		complement = 0
+	}
+	p.SizeCount = sizeCount
+	p.IndexCount = int(sizeCount/int64(pageSize)) + complement
+	p.List = list
+}
+
+// 分页参数
+type QueryPaging struct {
+	PageSize  int `form:"page_size"`  //每页多少条
+	PageIndex int `form:"page_index"` //第几页
+}
+
+func (p *QueryPaging) Convert() (limit int, offset int) {
+	p.defaultValue()
+	limit = p.PageSize
+	offset = p.PageSize * (p.PageIndex - 1)
+	return
+}
+
+func (p *QueryPaging) defaultValue() {
+	if p.PageIndex == 0 {
+		p.PageIndex = 1
+	}
+	if p.PageSize == 0 {
+		p.PageSize = 10
+	}
