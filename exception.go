@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type Exception struct {
+type exception struct {
 	ErrCode  int    `json:"-"`
 	ErrMsg   string `json:"-"`
 	Time     string `json:"-"`
@@ -14,7 +14,7 @@ type Exception struct {
 	Line     int    `json:"-"`
 }
 
-func (e *Exception) Error() string {
+func (e *exception) Error() string {
 	return fmt.Sprintf("%s:%d %s", e.Filename, e.Line, e.ErrMsg)
 }
 
@@ -32,7 +32,7 @@ func Error(err error, errCode ...int) error {
 	if !ok {
 		return fmt.Errorf("%s %v", "caller fail", err)
 	}
-	return &Exception{
+	return &exception{
 		Time:     time.Now().Local().String(),
 		Filename: file,
 		Line:     line,

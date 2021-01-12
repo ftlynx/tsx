@@ -45,7 +45,7 @@ func NewOk(data ...interface{}) *Response {
 }
 
 func NewResponse(err error) *Response {
-	if exception, ok := err.(*Exception); ok {
+	if exception, ok := err.(*exception); ok {
 		message := "未定义的code"
 		httpCode := http.StatusInternalServerError
 		if exception.ErrCode == 0 {
@@ -58,6 +58,7 @@ func NewResponse(err error) *Response {
 		return &Response{
 			HttpCode:  httpCode,
 			ErrCode:   exception.ErrCode,
+			ErrMsg:    exception.ErrMsg,
 			Message:   message,
 			Data:      nil,
 			RequestId: "",
