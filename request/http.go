@@ -1,6 +1,7 @@
 package request
 
 import (
+	"go.etcd.io/etcd/client"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -14,6 +15,7 @@ type HttpRequestParam struct {
 	User          string
 	Password      string
 	Authorization string
+	Authentication string
 }
 
 type HttpResponse struct {
@@ -35,6 +37,10 @@ func HttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
 
 	if reqParam.Authorization != "" {
 		req.Header.Set("Authorization", reqParam.Authorization)
+	}
+
+	if reqParam.Authentication != "" {
+		req.Header.Set("Authentication", reqParam.Authentication)
 	}
 
 	//fmt.Println(req.URL, req.Header.Get("Authorization"))
