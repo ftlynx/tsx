@@ -1,4 +1,4 @@
-package request
+package tsx
 
 import (
 	"io/ioutil"
