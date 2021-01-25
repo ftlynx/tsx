@@ -93,8 +93,8 @@ func (p *PageData) Format(sizeCount int64, pageSize int, list interface{}) {
 
 // 分页参数
 type QueryPaging struct {
-	PageSize  int `form:"page_size"`  //每页多少条
-	PageIndex int `form:"page_index"` //第几页
+	PageSize  int `form:"pageSize"`  //每页多少条
+	PageIndex int `form:"current"` //第几页
 }
 
 func (p *QueryPaging) Convert() (limit int, offset int) {
