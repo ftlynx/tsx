@@ -76,7 +76,8 @@ type PageData struct {
 	PageIndex  int         `json:"page_index"`  // 当前第几页
 	SizeCount  int64       `json:"total"`       // 总共多少条数据
 	IndexCount int         `json:"index_count"` // 总共多少页面
-	List       interface{} `json:"list"`        // 页面数据
+	List       interface{} `json:"data"`        // 页面数据
+	Success    bool        `json:"success"`
 }
 
 func (p *PageData) Format(sizeCount int64, pageSize int, list interface{}) {
