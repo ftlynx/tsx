@@ -14,6 +14,7 @@ var CodeMap map[int]CodeValue //定义code
 type Response struct {
 	HttpCode  int         `json:"-"`
 	ErrCode   int         `json:"code"` //自定义code
+	Success   bool        `json:"success"`
 	ErrMsg    string      `json:"-"`
 	Message   string      `json:"message,omitempty"` //错误提示
 	Data      interface{} `json:"data,omitempty"`
@@ -32,6 +33,7 @@ func NewOk(data ...interface{}) *Response {
 	return &Response{
 		HttpCode:  http.StatusOK,
 		ErrCode:   http.StatusOK,
+		Success:   true,
 		Message:   "ok",
 		ErrMsg:    "",
 		Data:      d,
@@ -72,7 +74,7 @@ func NewResponse(err error) *Response {
 type PageData struct {
 	PageSize   int         `json:"page_size"`   // 一页多少条
 	PageIndex  int         `json:"page_index"`  // 当前第几页
-	SizeCount  int64       `json:"size_count"`  // 总共多少条数据
+	SizeCount  int64       `json:"total"`       // 总共多少条数据
 	IndexCount int         `json:"index_count"` // 总共多少页面
 	List       interface{} `json:"list"`        // 页面数据
 }
