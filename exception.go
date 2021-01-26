@@ -27,6 +27,10 @@ func Error(err error, errCode ...int) error {
 	if len(errCode) > 0 {
 		code = errCode[0]
 	}
+	// 如果本身已经是一个exception 的err。用于多次使用tsx.Error时，使用最底层的code
+	if value, ok := err.(*Exception); ok {
+		code = value.ErrCode
+	}
 
 	_, file, line, ok := runtime.Caller(1)
 	if !ok {
