@@ -11,10 +11,6 @@ type HttpRequestParam struct {
 	Url           string
 	Body          string
 	Method        string
-	User          string
-	Password      string
-	Authorization string
-	Authentication string
 }
 
 type HttpResponse struct {
@@ -23,29 +19,105 @@ type HttpResponse struct {
 	Header  http.Header //请求返回的header
 }
 
-func HttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
+
+
+//结果分析处理
+type ResultParse func(HttpResponse) error
+//样例
+//type TestResponse struct {
+//	Code int
+//	Msg string
+//}
+//func MyResponse(t *TestResponse) ResultParse{
+//	return func(resp HttpResponse) error {
+//		if resp.Code != http.StatusOK {
+//			return nil
+//		}
+//		return json.Unmarshal(resp.Content, t)
+//	}
+//}
+
+
+//请求参数
+type Option func(*http.Request)
+
+// json请求类型
+func ContentTypeByJSON() Option {
+	return func(req *http.Request) {
+		req.Header.Set("Content-Type", "application/json")
+	}
+}
+
+// form请求类型
+func ContentTypeByForm() Option {
+	return func(req *http.Request) {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
+}
+
+// 自定义请求类型
+func SetContentType(contentType string) Option {
+	return func(req *http.Request) {
+		req.Header.Set("Content-Type", contentType)
+	}
+}
+
+// http basic 认证
+func BasicAuth(username string, password string) Option {
+	return func(req *http.Request) {
+		req.SetBasicAuth(username, password)
+	}
+}
+
+// 标准http的认证信息应该使用Authorization header
+func Authorization(token string) Option {
+	return func(req *http.Request) {
+		req.Header.Set("Authorization", token)
+	}
+}
+
+// 自定义认证信息的header
+func SetAuthorization(key string, token string) Option {
+	return func(req *http.Request) {
+		req.Header.Set(key, token)
+	}
+}
+
+//Form认证，自己定义用户的key为username, 密码的key为password
+func FormAuth(username string, password string) (string, error) {
+	r := http.Request{}
+	if err := r.ParseForm(); err != nil {
+		return "", err
+	}
+	r.Form.Add("userName", username)
+	r.Form.Add("password", password)
+	return r.Form.Encode(), nil
+}
+
+
+//默认client参数
+func DefaultClient() *http.Client {
+	return &http.Client{
+		Timeout: 15 * time.Second,
+	}
+}
+
+//需要注意options的顺序
+func HttpSend(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) (HttpResponse, error) {
 	rc := HttpResponse{}
 	req, err := http.NewRequest(reqParam.Method, reqParam.Url, strings.NewReader(reqParam.Body))
 	if err != nil {
 		return rc, err
 	}
-	req.Header.Set("Content-Type", "application/json")
-	if reqParam.Password != "" {
-		req.SetBasicAuth(reqParam.User, reqParam.Password)
+
+	// 自定义配置
+	for _, option := range options {
+		option(req)
 	}
 
-	if reqParam.Authorization != "" {
-		req.Header.Set("Authorization", reqParam.Authorization)
-	}
-
-	if reqParam.Authentication != "" {
-		req.Header.Set("Authentication", reqParam.Authentication)
-	}
-
-	//fmt.Println(req.URL, req.Header.Get("Authorization"))
-	client := &http.Client{
-		Timeout: time.Duration(15 * time.Second),
-	}
+	//client := &http.Client{
+	//	Timeout: time.Duration(15 * time.Second),
+	//}
 	resp, err := client.Do(req)
 	if err != nil {
 		return rc, err
@@ -57,6 +129,39 @@ func HttpRequest(reqParam HttpRequestParam) (HttpResponse, error) {
 	}
 	rc.Code = resp.StatusCode
 	rc.Header = resp.Header
+
+	if err := resultParse(rc); err != nil {
+		return rc, err
+	}
 	//fmt.Printf("req_method:%s req_url:%s req_body:%s resp_code:%d resp_content:%s", req.Method, req.URL.String(), string(reqParam.Body), rc.Code, string(rc.Content))
 	return rc, nil
+}
+
+
+//需要注意options的顺序，通过自定义ResultParse函数参数自行处理解析的结果
+func HttpResult(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) error {
+	rc := HttpResponse{}
+	req, err := http.NewRequest(reqParam.Method, reqParam.Url, strings.NewReader(reqParam.Body))
+	if err != nil {
+		return err
+	}
+
+	// 自定义配置
+	for _, option := range options {
+		option(req)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	rc.Content, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	rc.Code = resp.StatusCode
+	rc.Header = resp.Header
+
+	return resultParse(rc)
 }

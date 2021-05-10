@@ -26,11 +26,20 @@ func Millisecond() int64 {
 
 func MillisecondString() string {
 	t := strings.Split(time.Now().Format("20060102150405.000"), ".")
-	return fmt.Sprintf("%s%s",t[0],t[1])
+	return fmt.Sprintf("%s%s", t[0], t[1])
 }
 
 //判断一个字符串是否在列表内
 func IsArray(strList []string, str string) bool {
+	for _, s := range strList {
+		if str == s {
+			return true
+		}
+	}
+	return false
+}
+
+func InSliceByStr(strList []string, str string) bool {
 	for _, s := range strList {
 		if str == s {
 			return true
@@ -70,6 +79,7 @@ func GetRandomLowerString(getLen int64, prefix string) string {
 	}
 	return prefix + "-" + string(result)
 }
+
 //生成小写随机字符串,如果prefix为空，则不带前缀。
 func GetRandomLowerNumberString(getLen int64, prefix string) string {
 	str := "abcdefghijklmnopqrstuvwxyz0123456789"
