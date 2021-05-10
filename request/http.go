@@ -8,9 +8,9 @@ import (
 )
 
 type HttpRequestParam struct {
-	Url           string
-	Body          string
-	Method        string
+	Url    string
+	Body   string
+	Method string
 }
 
 type HttpResponse struct {
@@ -19,26 +19,7 @@ type HttpResponse struct {
 	Header  http.Header //请求返回的header
 }
 
-
-
-//结果分析处理
-type ResultParse func(HttpResponse) error
-//样例
-//type TestResponse struct {
-//	Code int
-//	Msg string
-//}
-//func MyResponse(t *TestResponse) ResultParse{
-//	return func(resp HttpResponse) error {
-//		if resp.Code != http.StatusOK {
-//			return nil
-//		}
-//		return json.Unmarshal(resp.Content, t)
-//	}
-//}
-
-
-//请求参数
+//自定义参数
 type Option func(*http.Request)
 
 // json请求类型
@@ -94,7 +75,6 @@ func FormAuth(username string, password string) (string, error) {
 	return r.Form.Encode(), nil
 }
 
-
 //默认client参数
 func DefaultClient() *http.Client {
 	return &http.Client{
@@ -103,7 +83,7 @@ func DefaultClient() *http.Client {
 }
 
 //需要注意options的顺序
-func HttpSend(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) (HttpResponse, error) {
+func HttpSend(client *http.Client, reqParam HttpRequestParam, options ...Option) (HttpResponse, error) {
 	rc := HttpResponse{}
 	req, err := http.NewRequest(reqParam.Method, reqParam.Url, strings.NewReader(reqParam.Body))
 	if err != nil {
@@ -130,13 +110,28 @@ func HttpSend(client *http.Client, reqParam HttpRequestParam, resultParse Result
 	rc.Code = resp.StatusCode
 	rc.Header = resp.Header
 
-	if err := resultParse(rc); err != nil {
-		return rc, err
-	}
 	//fmt.Printf("req_method:%s req_url:%s req_body:%s resp_code:%d resp_content:%s", req.Method, req.URL.String(), string(reqParam.Body), rc.Code, string(rc.Content))
 	return rc, nil
 }
 
+//自定义结果处理
+type ResultParse func(HttpResponse) error
+
+/*
+样例
+type TestResponse struct {
+	Code int
+	Msg string
+}
+func MyResponse(t *TestResponse) ResultParse{
+	return func(resp HttpResponse) error {
+		if resp.Code != http.StatusOK {
+			return nil
+		}
+		return json.Unmarshal(resp.Content, t)
+	}
+}
+*/
 
 //需要注意options的顺序，通过自定义ResultParse函数参数自行处理解析的结果
 func HttpResult(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) error {
