@@ -3,7 +3,6 @@ package tsx
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ftlynx/tsx"
 	"github.com/ftlynx/tsx/request"
 	"net/http"
 )
@@ -119,7 +118,7 @@ func (p *QueryPaging) defaultValue() {
 	}
 }
 
-//请求解析
+//返回解析
 func ResponseParse(result *Response) request.ResultParse{
 	return func(resp request.HttpResponse) error {
 		if resp.Code != http.StatusOK {
