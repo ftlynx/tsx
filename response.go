@@ -1,6 +1,12 @@
 package tsx
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/ftlynx/tsx"
+	"github.com/ftlynx/tsx/request"
+	"net/http"
+)
 
 const RequestIdKey = "request_id" //用来记录每次请求ID的key
 
@@ -110,5 +116,15 @@ func (p *QueryPaging) defaultValue() {
 	}
 	if p.PageSize == 0 {
 		p.PageSize = 10
+	}
+}
+
+//请求解析
+func ResponseParse(result *Response) request.ResultParse{
+	return func(resp request.HttpResponse) error {
+		if resp.Code != http.StatusOK {
+			return fmt.Errorf("opsx 返回 http code not 200. is %d", resp.Code)
+		}
+		return json.Unmarshal(resp.Content, result)
 	}
 }
