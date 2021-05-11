@@ -134,29 +134,10 @@ func MyResponse(t *TestResponse) ResultParse{
 */
 
 //需要注意options的顺序，通过自定义ResultParse函数参数自行处理解析的结果
-func HttpResult(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) error {
-	rc := HttpResponse{}
-	req, err := http.NewRequest(reqParam.Method, reqParam.Url, strings.NewReader(reqParam.Body))
+func HttpResultParse(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) error {
+	resp, err := HttpSend(client, reqParam, options...)
 	if err != nil {
 		return err
 	}
-
-	// 自定义配置
-	for _, option := range options {
-		option(req)
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	rc.Content, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	rc.Code = resp.StatusCode
-	rc.Header = resp.Header
-
-	return resultParse(rc)
+	return resultParse(resp)
 }
