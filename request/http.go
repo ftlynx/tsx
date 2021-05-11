@@ -83,9 +83,9 @@ func DefaultClient() *http.Client {
 }
 
 //需要注意options的顺序
-func HttpSend(client *http.Client, reqParam HttpRequestParam, options ...Option) (HttpResponse, error) {
+func (param *HttpRequestParam)HttpSend(client *http.Client, options ...Option) (HttpResponse, error) {
 	rc := HttpResponse{}
-	req, err := http.NewRequest(reqParam.Method, reqParam.Url, strings.NewReader(reqParam.Body))
+	req, err := http.NewRequest(param.Method, param.Url, strings.NewReader(param.Body))
 	if err != nil {
 		return rc, err
 	}
@@ -126,7 +126,7 @@ type TestResponse struct {
 func MyResponse(t *TestResponse) ResultParse{
 	return func(resp HttpResponse) error {
 		if resp.Code != http.StatusOK {
-			return nil
+			return fmt.Error("error")
 		}
 		return json.Unmarshal(resp.Content, t)
 	}
@@ -134,8 +134,8 @@ func MyResponse(t *TestResponse) ResultParse{
 */
 
 //需要注意options的顺序，通过自定义ResultParse函数参数自行处理解析的结果
-func HttpResultParse(client *http.Client, reqParam HttpRequestParam, resultParse ResultParse, options ...Option) error {
-	resp, err := HttpSend(client, reqParam, options...)
+func (param *HttpRequestParam)HttpResultParse(client *http.Client, resultParse ResultParse, options ...Option) error {
+	resp, err := param.HttpSend(client, options...)
 	if err != nil {
 		return err
 	}
