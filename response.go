@@ -9,16 +9,20 @@ import (
 
 const RequestIdKey = "request_id" //用来记录每次请求ID的key
 
-const (
-	ErrCodeOriginalMsg = 1 //打印原始日志
-)
-
 type CodeValue struct {
 	HttpCode int
 	Msg      string
 }
 
 var CodeMap map[int]CodeValue //定义code
+
+// 设置code的消息
+func SetCodeMsg(code int, msg CodeValue) {
+	if msg.HttpCode==0 {
+		msg.HttpCode=http.StatusInternalServerError
+	}
+	CodeMap[code] = msg
+}
 
 type Response struct {
 	HttpCode  int         `json:"-"`
@@ -57,10 +61,6 @@ func NewResponse(err error) *Response {
 		// 如果errCode是0，则设置成500
 		if exception.ErrCode == 0 {
 			exception.ErrCode = http.StatusInternalServerError
-		}
-		// 如果errCode是1,则直接打印原始error消息
-		if exception.ErrCode == ErrCodeOriginalMsg {
-			message = exception.Error()
 		}
 		if _, ok := CodeMap[exception.ErrCode]; ok {
 			message = CodeMap[exception.ErrCode].Msg
@@ -128,10 +128,10 @@ func (p *QueryPaging) defaultValue() {
 }
 
 //返回解析
-func ResponseParse(result *Response) request.ResultParse{
+func ResponseParse(result *Response) request.ResultParse {
 	return func(resp request.HttpResponse) error {
 		if resp.Code != http.StatusOK {
-			result.HttpCode=resp.Code
+			result.HttpCode = resp.Code
 			return fmt.Errorf("opsx response http code not 200. is %d", resp.Code)
 		}
 		return json.Unmarshal(resp.Content, result)
