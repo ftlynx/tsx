@@ -9,6 +9,10 @@ import (
 
 const RequestIdKey = "request_id" //用来记录每次请求ID的key
 
+const (
+	ErrCodeOriginalMsg = 1 //打印原始日志
+)
+
 type CodeValue struct {
 	HttpCode int
 	Msg      string
@@ -50,8 +54,13 @@ func NewResponse(err error) *Response {
 	if exception, ok := err.(*Exception); ok {
 		message := "未定义的code"
 		httpCode := http.StatusInternalServerError
+		// 如果errCode是0，则设置成500
 		if exception.ErrCode == 0 {
 			exception.ErrCode = http.StatusInternalServerError
+		}
+		// 如果errCode是1,则直接打印原始error消息
+		if exception.ErrCode == ErrCodeOriginalMsg {
+			message = exception.Error()
 		}
 		if _, ok := CodeMap[exception.ErrCode]; ok {
 			message = CodeMap[exception.ErrCode].Msg
