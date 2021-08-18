@@ -131,7 +131,7 @@ func (p *QueryPaging) defaultValue() {
 func ResponseParse(result *Response) request.ResultParse {
 	return func(resp request.HttpResponse) error {
 		if resp.Code != http.StatusOK {
-			result.HttpCode = resp.Code
+			_ = json.Unmarshal(resp.Content, result)
 			return fmt.Errorf("opsx response http code not 200. is %d", resp.Code)
 		}
 		return json.Unmarshal(resp.Content, result)
